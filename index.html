@@ -1,0 +1,861 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Справочник скиллов операционной системы</title>
+<meta name="description" content="Каждый скилл и движок операционной системы 1.7 простыми словами: что делает, зачем, когда запускать и что написать Claude">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap"></noscript>
+<style>
+:root{color-scheme:light}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+
+/* Layout: одна колонка-справочник, сверху маршрут новичка и оглавление, ниже разделы по задачам с карточками скиллов в одинаковой сетке полей */
+:root{
+  --paper:#f6f7f4; --card:#ffffff; --ink:#1d2621; --muted:#5b665f; --line:#d9ded8;
+  --accent:#1f6b52; --accent-soft:#e3efe9; --new:#a8541c; --new-soft:#f6e8dc; --extra:#55508a; --extra-soft:#e9e8f4;
+  --f-display:"Unbounded","Golos Text",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#141a17; --card:#1b2420; --ink:#e4ebe6; --muted:#9daaa2; --line:#2e3a34;
+  --accent:#6cc4a2; --accent-soft:#203a30; --new:#e59a62; --new-soft:#3a2a1e; --extra:#aca6e6; --extra-soft:#2a2840; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#141a17; --card:#1b2420; --ink:#e4ebe6; --muted:#9daaa2; --line:#2e3a34;
+  --accent:#6cc4a2; --accent-soft:#203a30; --new:#e59a62; --new-soft:#3a2a1e; --extra:#aca6e6; --extra-soft:#2a2840; color-scheme:dark}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+.wrap{max-width:860px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:40px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(1.7rem,4.5vw,2.5rem);font-weight:700}
+h2{font-size:1.35rem;font-weight:700;padding-top:8px;border-top:2px solid var(--ink)}
+h3{font-size:1.02rem;font-weight:500;display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
+p{margin:0;max-width:68ch}
+code,.cmd{font-family:var(--f-mono);font-size:.86em}
+.lead{display:grid;gap:14px}
+.lead p{color:var(--muted)}
+.meta{font-size:.85rem;color:var(--muted);letter-spacing:.02em}
+section{display:grid;gap:16px}
+.intro{color:var(--muted)}
+.cards{display:grid;gap:12px}
+.sk{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:8px;break-inside:avoid}
+.sk dl{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;margin:0}
+.sk dt{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-top:3px}
+.sk dd{margin:0;min-width:0}
+.say{font-family:var(--f-mono);font-size:.86rem;background:var(--accent-soft);color:var(--ink);border-radius:6px;padding:2px 8px;display:inline}
+.cmd{color:var(--accent);font-weight:600}
+.tag{font-family:var(--f-body);font-size:.72rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border-radius:999px;padding:2px 9px}
+.t-new{background:var(--new-soft);color:var(--new)}
+.t-extra{background:var(--extra-soft);color:var(--extra)}
+.t-off{background:var(--line);color:var(--muted)}
+.box{border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:grid;gap:10px;background:var(--card)}
+.box ol,.box ul{margin:0;padding-left:1.3em;display:grid;gap:6px}
+.toc{columns:2 260px;column-gap:28px;margin:0;padding-left:1.3em}
+.toc li{break-inside:avoid;padding-block:2px}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:.9rem}
+.mini{display:grid;gap:6px;margin:0;padding-left:1.2em}
+@media (max-width:560px){.sk dl{grid-template-columns:1fr;gap:2px}.sk dt{padding-top:6px}}
+@media print{body{font-size:11pt}.wrap{max-width:none;padding:0;gap:22px}.sk{border-color:#bbb}h2{break-after:avoid}a{color:inherit;text-decoration:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="lead">
+  <p class="meta">Операционная система 1.7 · справочник для экспертов · ноябрь 2026</p>
+  <h1>Справочник скиллов операционной системы</h1>
+  <p><a href="spravochnik-skillov.pdf">Скачать PDF для печати и отправки</a></p>
+  <p>Здесь каждый инструмент системы описан одинаково: что он делает, зачем он тебе, когда и как часто его запускать, что написать Claude и что для него нужно. Читать подряд не обязательно: найди свою задачу в оглавлении и открой нужный раздел</p>
+</header>
+
+<section class="box">
+  <h3>Как этим пользоваться</h3>
+  <ul>
+    <li><b>Скилл</b> - готовый инструмент внутри Claude. Он сам ведёт работу по шагам и сам задаёт вопросы. Ты пишешь ему обычными словами в поле чата Claude в VS Code</li>
+    <li><b>Вызвать можно двумя способами</b>: фразой («сделай карусель про…») или командой через косую черту (<span class="cmd">/carousel</span>). Фраза удобнее, команда надёжнее, если Claude не понял</li>
+    <li><b>Движок</b> - машина, которая работает дальше одного раза: сама публикует, сама считает, сама ведёт человека по воронке. Их в системе пять</li>
+    <li><b>Всё, что Claude узнаёт о тебе</b> (ниша, аудитория, продукты, голос), лежит в папке <code>.business</code>. Чем полнее она заполнена, тем точнее пишут все скиллы-писатели</li>
+    <li><b>Платные сервисы</b> (Apify, Higgsfield, HeyGen, ElevenLabs, сервер) подключаются твоими аккаунтами. Где они нужны, это указано в карточке. Перед любой тратой кредитов скилл показывает смету и ждёт твоего «да»</li>
+  </ul>
+  <div class="legend"><span class="tag t-new">новое</span> пришло в версиях 1.6 и 1.7 <span class="tag t-extra">доп. пакет</span> ставится отдельно, в базовой операционной системе его нет <span class="tag t-off">устарел</span> оставлен для совместимости</div>
+</section>
+
+<section class="box">
+  <h3>С чего начать новому эксперту</h3>
+  <p>Порядок важен: каждый следующий шаг читает файлы, которые создал предыдущий</p>
+  <ol>
+    <li><span class="cmd">onboarding</span> - система знакомится с тобой и раскладывает твои данные по папкам</li>
+    <li><span class="cmd">raspakovka-ekspertnosti</span> - твой метод получает название, этапы и принципы</li>
+    <li><span class="cmd">issledovanie-ca</span> - портреты аудитории и её живой язык</li>
+    <li><span class="cmd">setka-produktov-i-offera</span> - продукты, цены и главные офферы одним файлом</li>
+    <li><span class="cmd">stil-golosa-po-postam</span> - твой голос по уже опубликованным постам</li>
+    <li><span class="cmd">setka-kontenta</span> - план публикаций на неделю или месяц</li>
+    <li>скиллы-писатели: <span class="cmd">post</span>, <span class="cmd">carousel</span>, <span class="cmd">video</span>, <span class="cmd">email</span></li>
+    <li><span class="cmd">tg-voronka</span> - воронка, которая превращает подписчика в заявку</li>
+    <li><span class="cmd">analitika-arhiva</span> раз в месяц - что сработало и что делать дальше</li>
+  </ol>
+  <p>Если нужно провести весь запуск продукта от идеи до продаж, просто напиши «запусти os»: скилл <span class="cmd">os</span> сам поведёт по этим шагам и не даст перескочить важные</p>
+</section>
+
+<nav class="box" aria-label="Оглавление">
+  <h3>Оглавление</h3>
+  <ol class="toc">
+    <li><a href="#dvizhki">Пять движков</a></li>
+    <li><a href="#zapusk">Запуск, стратегия, деньги</a></li>
+    <li><a href="#research">Исследования и аудитория</a></li>
+    <li><a href="#konkurenty">Конкуренты и виральные доноры</a></li>
+    <li><a href="#teksty">Тексты и посты</a></li>
+    <li><a href="#voronki">Воронки и статьи</a></li>
+    <li><a href="#vizual">Карусели, картинки, сторис</a></li>
+    <li><a href="#multiki">Мультики</a></li>
+    <li><a href="#ai-video">ИИ-видео без съёмки</a></li>
+    <li><a href="#video">Видео с тобой или двойником</a></li>
+    <li><a href="#chuzhie">Разбор и повтор чужих роликов</a></li>
+    <li><a href="#motion">Моушн-графика и объясняющие видео</a></li>
+    <li><a href="#sayty">Сайты</a></li>
+    <li><a href="#proverka">Проверка сайтов и лендингов</a></li>
+    <li><a href="#uroki">Уроки, документы, система</a></li>
+    <li><a href="#lite">Lite-версии для Claude.ai</a></li>
+    <li><a href="#dev">Для разработки и устаревшие</a></li>
+  </ol>
+</nav>
+
+<!-- ====================== ДВИЖКИ ====================== -->
+<section id="dvizhki">
+  <h2>Пять движков</h2>
+  <p class="intro">Скилл делает одну работу. Движок держит процесс: настраивается один раз и потом работает неделями. Три движка живут на твоём компьютере, два требуют сервер</p>
+  <div class="cards">
+    <article class="sk"><h3>SEO-движок <span class="cmd">seo-dvizhok</span></h3><dl>
+      <dt>Что делает</dt><dd>Ставит на твой сайт всё для поиска (раздел статей, карта сайта, Вебмастер, Метрика), замеряет спрос на темы и сам пишет статьи под реальные запросы</dd>
+      <dt>Чтобы что</dt><dd>Люди находят тебя в Яндексе и Google сами, без рекламы и без ежедневных постов. Статья работает месяцами</dd>
+      <dt>Когда</dt><dd>Когда есть свой сайт и хочется постоянного холодного трафика. Настройка один раз, дальше статьи по графику и замер раз в неделю</dd>
+      <dt>Скажи</dt><dd><span class="say">«настрой SEO-движок»</span> или <span class="say">«напиши статью под запрос …»</span></dd>
+      <dt>Нужно</dt><dd>Свой сайт и доступ к его хостингу</dd></dl></article>
+    <article class="sk"><h3>Автопостинг <span class="cmd">avtoposting</span></h3><dl>
+      <dt>Что делает</dt><dd>Публикует посты в Instagram, Telegram-канал и группу VK по расписанию из одной очереди, через официальные подключения площадок</dd>
+      <dt>Чтобы что</dt><dd>Контент выходит сам, даже когда ты занята или в отпуске</dd>
+      <dt>Когда</dt><dd>Когда контента больше пары постов в неделю. Настройка один раз, дальше только пополняешь очередь</dd>
+      <dt>Скажи</dt><dd><span class="say">«настрой автопостинг»</span></dd>
+      <dt>Нужно</dt><dd>Доступы к своим аккаунтам площадок</dd></dl></article>
+    <article class="sk"><h3>Планировщик <span class="cmd">planirovshchik</span></h3><dl>
+      <dt>Что делает</dt><dd>Планировщик задач и привычек на твоём компьютере: неделя, цели цикла, трекер. Открывается в браузере по локальному адресу</dd>
+      <dt>Чтобы что</dt><dd>Все сроки в одном месте, и Claude может сам вписывать туда задачи из разговора</dd>
+      <dt>Когда</dt><dd>Ставится один раз, пользоваться каждый день</dd>
+      <dt>Скажи</dt><dd><span class="say">«поставь планировщик»</span></dd>
+      <dt>Нужно</dt><dd>Ничего дополнительно</dd></dl></article>
+    <article class="sk"><h3>Движок воронок и рассылок <span class="cmd">tg-voronka-kit</span></h3><dl>
+      <dt>Что делает</dt><dd>Твой собственный бот в Telegram: выдаёт подарок за кодовое слово, дожимает до покупки цепочкой сообщений, делает рассылки по твоей базе</dd>
+      <dt>Чтобы что</dt><dd>Не платить за арендованный конструктор ботов и не зависеть от него. База подписчиков остаётся твоей</dd>
+      <dt>Когда</dt><dd>Когда воронка уже нужна постоянно. Тексты для неё пишет скилл <span class="cmd">tg-voronka</span></dd>
+      <dt>Скажи</dt><dd><span class="say">«поставь движок воронок»</span></dd>
+      <dt>Нужно</dt><dd>Сервер (VPS). Без этого движка система тоже работает полностью</dd></dl></article>
+    <article class="sk"><h3>Комментарий в личку <span class="cmd">comment-to-dm</span></h3><dl>
+      <dt>Что делает</dt><dd>Когда человек пишет под постом в Instagram кодовое слово, ему автоматически приходит сообщение в директ. Плюс рассылки по собранной базе</dd>
+      <dt>Чтобы что</dt><dd>Каждый комментарий превращается в контакт и разговор, без ручных ответов</dd>
+      <dt>Когда</dt><dd>Когда в Instagram регулярно идут посты с призывом «напиши слово в комментарии»</dd>
+      <dt>Скажи</dt><dd><span class="say">«поставь движок комментарий в личку»</span></dd>
+      <dt>Нужно</dt><dd>Сервер и домен, официальный доступ Meta</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== ЗАПУСК ====================== -->
+<section id="zapusk">
+  <h2>Запуск, стратегия, деньги</h2>
+  <div class="cards">
+    <article class="sk"><h3>Проводник запуска <span class="cmd">os</span></h3><dl>
+      <dt>Что делает</dt><dd>Ведёт по всему пути запуска продукта от сырой идеи до удержания клиентов: определяет, на каком ты этапе, открывает нужный шаг и подключает остальные скиллы</dd>
+      <dt>Чтобы что</dt><dd>Не гадать, что делать дальше, и не пропустить проверку спроса перед тем, как вкладываться</dd>
+      <dt>Когда</dt><dd>Каждый раз, когда возвращаешься к запуску. Он помнит, где ты остановилась</dd>
+      <dt>Скажи</dt><dd><span class="say">«запусти os»</span>, <span class="say">«какая у меня сейчас фаза»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+    <article class="sk"><h3>Онбординг <span class="cmd">onboarding</span></h3><dl>
+      <dt>Что делает</dt><dd>Интервью сразу после установки: ниша, продукт, аудитория, цель по доходу. Раскладывает ответы по папкам и учит пользоваться системой на твоём проекте</dd>
+      <dt>Чтобы что</dt><dd>Все скиллы с первого дня знают, кто ты и что продаёшь</dd>
+      <dt>Когда</dt><dd>Один раз в самом начале</dd>
+      <dt>Скажи</dt><dd><span class="say">«проведи онбординг»</span></dd>
+      <dt>Нужно</dt><dd>Час спокойного времени</dd></dl></article>
+    <article class="sk"><h3>Распаковка экспертности <span class="cmd">raspakovka-ekspertnosti</span></h3><dl>
+      <dt>Что делает</dt><dd>Превращает то, как ты реально работаешь с клиентами, в авторский метод: название, этапы, принципы, инструменты. Отдельно записывает, чего ты в контенте не делаешь никогда</dd>
+      <dt>Чтобы что</dt><dd>Тексты звучат как ты и опираются на твой метод</dd>
+      <dt>Когда</dt><dd>Один раз, обновлять при смене метода</dd>
+      <dt>Скажи</dt><dd><span class="say">«распакуй мою экспертность»</span></dd>
+      <dt>Нужно</dt><dd>Твои ответы, голосовые или записи консультаций</dd></dl></article>
+    <article class="sk"><h3>Распаковка новичка <span class="cmd">raspakovka-novichka</span> <span class="tag t-extra">доп. пакет</span></h3><dl>
+      <dt>Что делает</dt><dd>Вопросами помогает найти направление и продукт тому, у кого пока нет своей экспертизы</dd>
+      <dt>Чтобы что</dt><dd>Стартовать в нише с опорой на личный опыт и систему, без долгого обучения профессии</dd>
+      <dt>Когда</dt><dd>В самом начале, если не понимаешь, о чём вести блог</dd>
+      <dt>Скажи</dt><dd><span class="say">«помоги определить нишу»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+    <article class="sk"><h3>Продукты и оффер <span class="cmd">setka-produktov-i-offera</span></h3><dl>
+      <dt>Что делает</dt><dd>Собирает все твои продукты (курсы, консультации, наставничество, мини-продукты) с точными ценами и главными офферами в один файл</dd>
+      <dt>Чтобы что</dt><dd>Писатели постов и воронок продают именно твои продукты и не путают цены</dd>
+      <dt>Когда</dt><dd>Один раз, потом при любом изменении цен и линейки</dd>
+      <dt>Скажи</dt><dd><span class="say">«собери мою линейку продуктов»</span></dd>
+      <dt>Нужно</dt><dd>Список продуктов и цены</dd></dl></article>
+    <article class="sk"><h3>Маркетинг запуска <span class="cmd">launch-marketing</span></h3><dl>
+      <dt>Что делает</dt><dd>План разового запуска: главный крючок, каналы, материалы для прессы, как мерить результат</dd>
+      <dt>Чтобы что</dt><dd>Конкретный запуск прошёл по плану: все каналы работают на одну цель и в одни даты</dd>
+      <dt>Когда</dt><dd>Перед каждым запуском. Для всего пути от идеи используй <span class="cmd">os</span></dd>
+      <dt>Скажи</dt><dd><span class="say">«спланируй маркетинг запуска …»</span></dd>
+      <dt>Нужно</dt><dd>Описание продукта и даты</dd></dl></article>
+    <article class="sk"><h3>Совет по продажам <span class="cmd">sales-council</span></h3><dl>
+      <dt>Что делает</dt><dd>Разбирает твой вопрос глазами шести известных специалистов по продажам и переговорам: Чалдини, Хормози, Рэкхем, Восс, Клафф, Шварц</dd>
+      <dt>Чтобы что</dt><dd>Принять решение по цене, офферу, переговорам или продающему тексту с нескольких сторон</dd>
+      <dt>Когда</dt><dd>Когда сомневаешься в цене, в оффере или как ответить сложному клиенту</dd>
+      <dt>Скажи</dt><dd><span class="say">«собери совет по продажам: как поднять цену на …»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+    <article class="sk"><h3>Финансовый стратег <span class="cmd">финстратег</span></h3><dl>
+      <dt>Что делает</dt><dd>Считает ипотеку, сравнивает варианты вложений, проверяет любую идею как актив и раскладывает деньги под цель. Все цены и ставки берёт свежими из интернета</dd>
+      <dt>Чтобы что</dt><dd>Решения о личных деньгах на свежих цифрах</dd>
+      <dt>Когда</dt><dd>Перед крупной покупкой или вложением</dd>
+      <dt>Скажи</dt><dd><span class="say">«посчитай ипотеку»</span>, <span class="say">«куда вложить деньги»</span></dd>
+      <dt>Нужно</dt><dd>Твои суммы и сроки</dd></dl></article>
+    <article class="sk"><h3>Юрист <span class="cmd">yurist</span></h3><dl>
+      <dt>Что делает</dt><dd>Три режима: готовит комплект документов для онлайн-проекта, проверяет сайт на нарушения законов о данных, защите потребителей и рекламе, ведёт возвраты по регламенту</dd>
+      <dt>Чтобы что</dt><dd>Не получить штраф и спокойно принимать оплату</dd>
+      <dt>Когда</dt><dd>Перед запуском продаж и при каждом новом сайте. Возвраты по ситуации</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай документы для запуска»</span>, <span class="say">«проверь сайт на нарушения»</span></dd>
+      <dt>Нужно</dt><dd>Данные о тебе как о продавце и адрес сайта</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== ИССЛЕДОВАНИЯ ====================== -->
+<section id="research">
+  <h2>Исследования и аудитория</h2>
+  <div class="cards">
+    <article class="sk"><h3>Глубокий ресёрч <span class="cmd">glubokiy-research</span></h3><dl>
+      <dt>Что делает</dt><dd>Исследование по 12 шагам с проверками: вопрос, стратегия, источники, сбор, вывод, проверка вывода. Это то же самое, что <span class="cmd">deep-research</span></dd>
+      <dt>Чтобы что</dt><dd>Получить доказательную базу под решение: рынок, гипотеза, тренд</dd>
+      <dt>Когда</dt><dd>Перед крупным решением. Для быстрого факта не нужен</dd>
+      <dt>Скажи</dt><dd><span class="say">«глубокий ресёрч: …»</span></dd>
+      <dt>Нужно</dt><dd>Время, исследование идёт долго</dd></dl></article>
+    <article class="sk"><h3>Ресёрч темы <span class="cmd">resyorch-nishi</span></h3><dl>
+      <dt>Что делает</dt><dd>Собирает 3-7 свежих источников по одной теме ниши и кладёт короткий файл в базу</dd>
+      <dt>Чтобы что</dt><dd>Посты и статьи опираются на свежие факты и исследования</dd>
+      <dt>Когда</dt><dd>Перед постом или статьёй на тему, где нужны факты</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай ресёрч по теме …»</span></dd>
+      <dt>Нужно</dt><dd>Для соцсетей желательно Apify</dd></dl></article>
+    <article class="sk"><h3>Исследование аудитории <span class="cmd">issledovanie-ca</span></h3><dl>
+      <dt>Что делает</dt><dd>Делит аудиторию на сегменты и описывает главные: их фразы, боли, темы, тон, слова, которые отталкивают. Каждый тезис с указанием источника</dd>
+      <dt>Чтобы что</dt><dd>Писать на языке клиентов. Это фундамент для всех писателей</dd>
+      <dt>Когда</dt><dd>В начале, потом раз в несколько месяцев</dd>
+      <dt>Скажи</dt><dd><span class="say">«помоги разобраться с моей ЦА»</span></dd>
+      <dt>Нужно</dt><dd>Твои переписки, отзывы, комментарии</dd></dl></article>
+    <article class="sk"><h3>Аналитика архива <span class="cmd">analitika-arhiva</span></h3><dl>
+      <dt>Что делает</dt><dd>Разбирает посты за период (по умолчанию 60 дней), сравнивает лучшие и худшие и даёт гипотезы: какие заходы, темы и форматы работают</dd>
+      <dt>Чтобы что</dt><dd>Делать больше того, что заходит, и меньше того, что не работает</dd>
+      <dt>Когда</dt><dd>Раз в месяц по своему блогу, разово по конкуренту</dd>
+      <dt>Скажи</dt><dd><span class="say">«что у меня зашло за 60 дней»</span>, <span class="say">«разбери конкурента …»</span></dd>
+      <dt>Нужно</dt><dd>Архив постов (его собирает <span class="cmd">skraping-postov</span>)</dd></dl></article>
+    <article class="sk"><h3>Сбор постов в базу <span class="cmd">skraping-postov</span></h3><dl>
+      <dt>Что делает</dt><dd>Скачивает посты из Instagram и Telegram (твои или конкурента) в базу: дата, просмотры, лайки, подпись. Первый раз за 3-12 месяцев, потом только новые</dd>
+      <dt>Чтобы что</dt><dd>Это сырьё для аналитики, голоса и разборов конкурентов. Без него остальные аналитические скиллы работают вслепую</dd>
+      <dt>Когда</dt><dd>Один раз полный сбор, потом обновлять раз в неделю или перед аналитикой</dd>
+      <dt>Скажи</dt><dd><span class="say">«залей мой архив»</span>, <span class="say">«скрапни конкурента …»</span></dd>
+      <dt>Нужно</dt><dd>Apify</dd></dl></article>
+    <article class="sk"><h3>Распознавалка постов <span class="cmd">raspoznavalka-postov</span></h3><dl>
+      <dt>Что делает</dt><dd>Достаёт текст со слайдов каруселей и речь из рилсов в собранном архиве</dd>
+      <dt>Чтобы что</dt><dd>Анализировать смысл самих каруселей и роликов вместе с подписями</dd>
+      <dt>Когда</dt><dd>После сбора постов, перед аналитикой</dd>
+      <dt>Скажи</dt><dd><span class="say">«распознай тексты в архиве»</span></dd>
+      <dt>Нужно</dt><dd>Ключи сервисов распознавания</dd></dl></article>
+    <article class="sk"><h3>Голос по постам <span class="cmd">stil-golosa-po-postam</span></h3><dl>
+      <dt>Что делает</dt><dd>По твоим опубликованным постам описывает, как ты пишешь: тон, ритм, любимые слова, форматирование. Отдельно для постов, каруселей и рилсов</dd>
+      <dt>Чтобы что</dt><dd>Писатели пишут твоим голосом, и тексты не выдают нейросеть</dd>
+      <dt>Когда</dt><dd>Один раз после сбора архива, обновлять раз в квартал</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай профиль моего голоса»</span></dd>
+      <dt>Нужно</dt><dd>Собранный архив постов</dd></dl></article>
+    <article class="sk"><h3>Тон голоса <span class="cmd">tov-analyzer</span> <span class="tag t-extra">доп. пакет</span></h3><dl>
+      <dt>Что делает</dt><dd>По присланным постам делает документ о стиле письма, который можно вставить в любой другой ИИ-чат</dd>
+      <dt>Чтобы что</dt><dd>Получать тексты в своём стиле и вне этой системы</dd>
+      <dt>Когда</dt><dd>Один раз</dd>
+      <dt>Скажи</dt><dd><span class="say">«оцифруй мой tone of voice»</span></dd>
+      <dt>Нужно</dt><dd>10-20 твоих постов</dd></dl></article>
+    <article class="sk"><h3>Свёртка источника <span class="cmd">svertka-istochnika</span></h3><dl>
+      <dt>Что делает</dt><dd>Книгу, видео, подкаст или статью сжимает в короткую выжимку с цитатами, темами и блоком «как применить в моей нише»</dd>
+      <dt>Чтобы что</dt><dd>Пополнять базу знаний, из которой потом пишутся посты</dd>
+      <dt>Когда</dt><dd>Каждый раз, когда находишь ценный чужой материал</dd>
+      <dt>Скажи</dt><dd><span class="say">«сверни эту книгу»</span> и прикрепи файл или ссылку</dd>
+      <dt>Нужно</dt><dd>Сам источник</dd></dl></article>
+    <article class="sk"><h3>Карта знаний <span class="cmd">karta-znaniy</span></h3><dl>
+      <dt>Что делает</dt><dd>Обновляет главный файл-оглавление твоей базы: ссылки на аудиторию, метод, продукты, стиль, выжимки, аналитику</dd>
+      <dt>Чтобы что</dt><dd>Быстро находить свои материалы, в том числе в Obsidian</dd>
+      <dt>Когда</dt><dd>После крупных обновлений базы</dd>
+      <dt>Скажи</dt><dd><span class="say">«обнови карту знаний»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+    <article class="sk"><h3>Поиск фото <span class="cmd">visual-research</span></h3><dl>
+      <dt>Что делает</dt><dd>Находит публичные фото людей, событий и новостей в хорошем качестве и складывает в папку</dd>
+      <dt>Чтобы что</dt><dd>Иллюстрировать посты и ролики реальными фото</dd>
+      <dt>Когда</dt><dd>По задаче</dd>
+      <dt>Скажи</dt><dd><span class="say">«найди фото …»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+    <article class="sk"><h3>Расшифровка YouTube <span class="cmd">youtube-transcript</span></h3><dl>
+      <dt>Что делает</dt><dd>Скачивает текст YouTube-видео по ссылке</dd>
+      <dt>Чтобы что</dt><dd>Быстро взять материал из видео для выжимки, поста или разбора</dd>
+      <dt>Когда</dt><dd>По задаче</dd>
+      <dt>Скажи</dt><dd><span class="say">«расшифруй это видео»</span> + ссылка</dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== КОНКУРЕНТЫ ====================== -->
+<section id="konkurenty">
+  <h2>Конкуренты и виральные доноры</h2>
+  <p class="intro">Донор - чужой пост или ролик, который уже собрал много просмотров. Из него берут механику и переписывают под себя</p>
+  <div class="cards">
+    <article class="sk"><h3>Радар конкурентов в Telegram <span class="cmd">konkurent-radar</span> <span class="tag t-new">новое</span></h3><dl>
+      <dt>Что делает</dt><dd>Раз в неделю собирает новые посты Telegram-каналов конкурентов и раскладывает по трём линиям: о чём они пишут, что и как продают (начинка продукта и оффер вокруг неё), какие механики запуска используют. Ловит их продажи с датами и ссылками</dd>
+      <dt>Чтобы что</dt><dd>Каждую неделю видеть рынок целиком: какие смыслы уже заняты, где свободное место для тебя, когда конкуренты запускаются</dd>
+      <dt>Когда</dt><dd>Раз в неделю. Полную карту смыслов рынка пересобирать раз в 2-3 месяца</dd>
+      <dt>Скажи</dt><dd><span class="say">«радар конкурентов»</span>, <span class="say">«снимок рынка»</span></dd>
+      <dt>Нужно</dt><dd>Список каналов конкурентов</dd></dl></article>
+    <article class="sk"><h3>Ежедневный разбор роликов <span class="cmd">competitors-daily-scan</span></h3><dl>
+      <dt>Что делает</dt><dd>Берёт ролики конкурентов, вышедшие сегодня (Instagram, TikTok, YouTube Shorts), выбирает самые виральные и делает по каждому разбор: текст, кадры, заголовок</dd>
+      <dt>Чтобы что</dt><dd>Каждое утро видеть, что залетает в нише, и брать это в работу</dd>
+      <dt>Когда</dt><dd>Каждый день или в дни производства роликов</dd>
+      <dt>Скажи</dt><dd><span class="say">«скан конкурентов за сегодня»</span></dd>
+      <dt>Нужно</dt><dd>Список аккаунтов конкурентов</dd></dl></article>
+    <article class="sk"><h3>Сводка по конкурентам <span class="cmd">svyortka-analitik-konkurentov</span></h3><dl>
+      <dt>Что делает</dt><dd>Сводит все разборы конкурентов в один документ: что работает у нескольких сразу, чего избегать, чем ты можешь отличаться</dd>
+      <dt>Чтобы что</dt><dd>Видеть общую картину по всем конкурентам сразу</dd>
+      <dt>Когда</dt><dd>После каждой пачки разборов</dd>
+      <dt>Скажи</dt><dd><span class="say">«обнови сводку по конкурентам»</span></dd>
+      <dt>Нужно</dt><dd>Сделанные разборы</dd></dl></article>
+    <article class="sk"><h3>Найди виралку <span class="cmd">найди-виралку</span></h3><dl>
+      <dt>Что делает</dt><dd>Находит виральные ролики и карусели по теме и отдаёт список ссылок. Ничего не скачивает</dd>
+      <dt>Чтобы что</dt><dd>Быстро найти доноров под тему недели</dd>
+      <dt>Когда</dt><dd>Перед производством контента</dd>
+      <dt>Скажи</dt><dd><span class="say">«найди виралку про …»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+    <article class="sk"><h3>Лаборатория Reels <span class="cmd">reels-lab</span> <span class="tag t-extra">доп. пакет</span></h3><dl>
+      <dt>Что делает</dt><dd>Смотрит топовые рилсы конкурентов, предлагает 5 тем и пишет 5 сценариев твоим голосом без плагиата</dd>
+      <dt>Чтобы что</dt><dd>Получить пачку сценариев рилсов за один заход</dd>
+      <dt>Когда</dt><dd>Раз в неделю или под партию съёмок</dd>
+      <dt>Скажи</dt><dd><span class="say">«Лаборатория, давай сценарии»</span></dd>
+      <dt>Нужно</dt><dd>Apify</dd></dl></article>
+    <article class="sk"><h3>Радары форматов <span class="cmd">ig-carousel-radar</span> · <span class="cmd">threads-radar</span> · <span class="cmd">split-donor-radar</span></h3><dl>
+      <dt>Что делает</dt><dd>Ищут свежих доноров: виральные карусели англоязычного Instagram, виральные текстовые посты в Threads и X, ролики формата «сверху экран, снизу говорящая голова»</dd>
+      <dt>Чтобы что</dt><dd>Брать идеи с англоязычного рынка раньше, чем они дойдут до русскоязычного</dd>
+      <dt>Когда</dt><dd>Ежедневно или перед производством</dd>
+      <dt>Скажи</dt><dd><span class="say">«найди свежие карусели»</span>, <span class="say">«радар Threads»</span></dd>
+      <dt>Нужно</dt><dd>Apify или вход в аккаунт площадки</dd></dl></article>
+    <article class="sk"><h3>Закономерности виральности <span class="cmd">pattern-extraction</span></h3><dl>
+      <dt>Что делает</dt><dd>По большой подборке чужих виральных постов выделяет повторяющиеся крючки и структуры</dd>
+      <dt>Чтобы что</dt><dd>Понять, почему залетает, и повторять механику своим голосом</dd>
+      <dt>Когда</dt><dd>Разово, когда собрана подборка</dd>
+      <dt>Скажи</dt><dd><span class="say">«найди закономерности в этих постах»</span></dd>
+      <dt>Нужно</dt><dd>Подборка постов</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== ТЕКСТЫ ====================== -->
+<section id="teksty">
+  <h2>Тексты и посты</h2>
+  <p class="intro">Все писатели читают твою базу (метод, аудитория, продукты, голос) и в конце сами вычищают нейросетевые штампы</p>
+  <div class="cards">
+    <article class="sk"><h3>План публикаций <span class="cmd">setka-kontenta</span></h3><dl>
+      <dt>Что делает</dt><dd>Собирает план на неделю, две или месяц для Instagram и Telegram: что и в какой день выходит, в каком формате. Может строить прогрев к запуску</dd>
+      <dt>Чтобы что</dt><dd>Не придумывать каждый день, о чём писать, и держать баланс пользы, личного и продаж</dd>
+      <dt>Когда</dt><dd>Раз в неделю или раз в месяц</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай контент-план на неделю»</span>, <span class="say">«запусти прогрев к курсу»</span></dd>
+      <dt>Нужно</dt><dd>Заполненная база</dd></dl></article>
+    <article class="sk"><h3>Пост <span class="cmd">post</span></h3><dl>
+      <dt>Что делает</dt><dd>Длинный пост-история для Telegram или LinkedIn на русском или английском, с проверкой независимым ревьюером</dd>
+      <dt>Чтобы что</dt><dd>Основной формат прогрева в канале</dd>
+      <dt>Когда</dt><dd>Каждый будний день или по плану</dd>
+      <dt>Скажи</dt><dd><span class="say">«напиши пост про …»</span></dd>
+      <dt>Нужно</dt><dd>Тема или голосовое</dd></dl></article>
+    <article class="sk"><h3>Продающий пост <span class="cmd">selling-post</span> <span class="tag t-extra">доп. пакет</span></h3><dl>
+      <dt>Что делает</dt><dd>Продающий пост по формуле из 9 блоков. Может усилить уже написанный</dd>
+      <dt>Чтобы что</dt><dd>Продавать курс, услугу или место на запуске</dd>
+      <dt>Когда</dt><dd>В дни продаж, обычно 1-2 раза в неделю или серией на запуске</dd>
+      <dt>Скажи</dt><dd><span class="say">«напиши продающий пост про …»</span></dd>
+      <dt>Нужно</dt><dd>Продукт и цена</dd></dl></article>
+    <article class="sk"><h3>Польза с мягкой продажей <span class="cmd">post-cta</span> <span class="tag t-extra">доп. пакет</span></h3><dl>
+      <dt>Что делает</dt><dd>Пост, где большая часть настоящая польза, а в конце естественный переход к продукту</dd>
+      <dt>Чтобы что</dt><dd>Продавать без ощущения «мне продают»</dd>
+      <dt>Когда</dt><dd>Регулярно между полезными и продающими постами</dd>
+      <dt>Скажи</dt><dd><span class="say">«полезный пост с переходом на …»</span></dd>
+      <dt>Нужно</dt><dd>Тема и продукт</dd></dl></article>
+    <article class="sk"><h3>Сторителлинг и провал <span class="cmd">storytelling</span> · <span class="cmd">failstory</span> <span class="tag t-extra">доп. пакет</span></h3><dl>
+      <dt>Что делает</dt><dd>Первый: случай из жизни, вывод и параллель с твоей темой. Второй: честная история о твоей ошибке с выводом</dd>
+      <dt>Чтобы что</dt><dd>Доверие и близость: люди покупают у живого человека</dd>
+      <dt>Когда</dt><dd>1-2 раза в неделю</dd>
+      <dt>Скажи</dt><dd><span class="say">«пост-история: вчера …»</span>, <span class="say">«пост про мой факап …»</span></dd>
+      <dt>Нужно</dt><dd>Сама история, хоть голосовым</dd></dl></article>
+    <article class="sk"><h3>Разоблачение, возражения, рейтинг <span class="cmd">big-injustice</span> · <span class="cmd">objection-handler</span> · <span class="cmd">rating-post</span> <span class="tag t-extra">доп. пакет</span></h3><dl>
+      <dt>Что делает</dt><dd>Разоблачение популярного заблуждения в нише. Короткие ответы на сомнения перед покупкой. Честное сравнение способов решить проблему, где выигрывает твой метод</dd>
+      <dt>Чтобы что</dt><dd>Снять возражения и показать, почему твой подход работает</dd>
+      <dt>Когда</dt><dd>Перед запуском и в прогреве</dd>
+      <dt>Скажи</dt><dd><span class="say">«пост-разоблачение мифа …»</span>, <span class="say">«закрой возражения перед продажей»</span></dd>
+      <dt>Нужно</dt><dd>Список мифов или возражений</dd></dl></article>
+    <article class="sk"><h3>Кейс клиента <span class="cmd">case-packager</span> <span class="tag t-extra">доп. пакет</span></h3><dl>
+      <dt>Что делает</dt><dd>Задаёт вопросы о результате клиента и упаковывает его историю: с чем пришёл, что прошли, к чему пришёл</dd>
+      <dt>Чтобы что</dt><dd>Доказательство, что метод работает, в котором читатель узнаёт себя</dd>
+      <dt>Когда</dt><dd>После каждого яркого результата клиента</dd>
+      <dt>Скажи</dt><dd><span class="say">«упакуй кейс клиентки …»</span></dd>
+      <dt>Нужно</dt><dd>Согласие клиента и факты результата</dd></dl></article>
+    <article class="sk"><h3>Новость в пост <span class="cmd">newsjacking</span> <span class="tag t-extra">доп. пакет</span></h3><dl>
+      <dt>Что делает</dt><dd>Берёт свежую новость и делает экспертный пост, где новость только крючок, а главное твой разбор</dd>
+      <dt>Чтобы что</dt><dd>Охват на волне инфоповода</dd>
+      <dt>Когда</dt><dd>Когда в нише или в стране громкое событие</dd>
+      <dt>Скажи</dt><dd><span class="say">«ньюсджекинг про …»</span></dd>
+      <dt>Нужно</dt><dd>Новость или тема для поиска</dd></dl></article>
+    <article class="sk"><h3>Длинная статья <span class="cmd">longform</span></h3><dl>
+      <dt>Что делает</dt><dd>Рассылка, статья для блога или LinkedIn на 800-3000 слов</dd>
+      <dt>Чтобы что</dt><dd>Глубокий материал, который показывает экспертность</dd>
+      <dt>Когда</dt><dd>Раз в неделю или месяц</dd>
+      <dt>Скажи</dt><dd><span class="say">«напиши статью про …»</span></dd>
+      <dt>Нужно</dt><dd>Тема</dd></dl></article>
+    <article class="sk"><h3>Письмо <span class="cmd">email</span></h3><dl>
+      <dt>Что делает</dt><dd>Готовое письмо для рассылки: тема, первая строка, текст, призыв</dd>
+      <dt>Чтобы что</dt><dd>Прогревать и продавать по своей базе почты</dd>
+      <dt>Когда</dt><dd>По графику рассылки</dd>
+      <dt>Скажи</dt><dd><span class="say">«напиши письмо подписчикам про …»</span></dd>
+      <dt>Нужно</dt><dd>Сервис рассылок</dd></dl></article>
+    <article class="sk"><h3>Сообщение бота <span class="cmd">bot-message</span></h3><dl>
+      <dt>Что делает</dt><dd>Короткое сообщение для рассылки бота (100-300 знаков) с 1-3 кнопками</dd>
+      <dt>Чтобы что</dt><dd>Чтобы подписчики бота нажали и перешли</dd>
+      <dt>Когда</dt><dd>При каждой рассылке по боту</dd>
+      <dt>Скажи</dt><dd><span class="say">«напиши пуш в бота про …»</span></dd>
+      <dt>Нужно</dt><dd>Бот</dd></dl></article>
+    <article class="sk"><h3>Твиты и Threads <span class="cmd">tweet</span></h3><dl>
+      <dt>Что делает</dt><dd>Короткие посты и цепочки для X и Threads твоим голосом</dd>
+      <dt>Чтобы что</dt><dd>Охват в текстовых соцсетях</dd>
+      <dt>Когда</dt><dd>Ежедневно, если ведёшь эти площадки</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай тред про …»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+    <article class="sk"><h3>Шапка Instagram <span class="cmd">ig-bio</span></h3><dl>
+      <dt>Что делает</dt><dd>Имя профиля и описание до 150 знаков по формуле, которая приводит подписчиков</dd>
+      <dt>Чтобы что</dt><dd>Чтобы человек за 3 секунды понял, кто ты и зачем подписываться</dd>
+      <dt>Когда</dt><dd>Один раз и при смене позиционирования</dd>
+      <dt>Скажи</dt><dd><span class="say">«перепиши мою шапку»</span></dd>
+      <dt>Нужно</dt><dd>Текущая шапка</dd></dl></article>
+    <article class="sk"><h3>Крючки и заголовки <span class="cmd">hook-generator</span></h3><dl>
+      <dt>Что делает</dt><dd>10 вариантов первой фразы, 5 заголовков и 3 идеи обложки к одному материалу</dd>
+      <dt>Чтобы что</dt><dd>Выбрать самый цепляющий заход или проверить несколько</dd>
+      <dt>Когда</dt><dd>К каждому важному посту или ролику</dd>
+      <dt>Скажи</dt><dd><span class="say">«дай хуки к этому тексту»</span></dd>
+      <dt>Нужно</dt><dd>Готовый текст или тема</dd></dl></article>
+    <article class="sk"><h3>Тайм-коды подкаста <span class="cmd">podcast-timecodes</span> <span class="tag t-extra">доп. пакет</span></h3><dl>
+      <dt>Что делает</dt><dd>По расшифровке выпуска пишет заголовок, тайм-коды с интригой и призыв</dd>
+      <dt>Чтобы что</dt><dd>Чтобы эфир или подкаст досматривали и переслушивали</dd>
+      <dt>Когда</dt><dd>После каждого эфира</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай тайм-коды»</span> + расшифровка</dd>
+      <dt>Нужно</dt><dd>Расшифровка</dd></dl></article>
+    <article class="sk"><h3>Адаптация и перевод <span class="cmd">adaptation</span> · <span class="cmd">multi-language-localization</span></h3><dl>
+      <dt>Что делает</dt><dd>Первый: чужой виральный текст или сценарий переписывает твоим голосом в том же формате. Второй: переносит контент между русским и английским с культурной адаптацией</dd>
+      <dt>Чтобы что</dt><dd>Брать проверенные механики и выходить на второй язык</dd>
+      <dt>Когда</dt><dd>По задаче</dd>
+      <dt>Скажи</dt><dd><span class="say">«адаптируй этот текст под меня»</span>, <span class="say">«сделай английскую версию»</span></dd>
+      <dt>Нужно</dt><dd>Исходник</dd></dl></article>
+    <article class="sk"><h3>Чистка штампов <span class="cmd">humaniser</span> · <span class="cmd">mask-banned-words</span></h3><dl>
+      <dt>Что делает</dt><dd>Первый находит и переписывает нейросетевые штампы твоим голосом. Второй маскирует слова, за которые Instagram и Threads режут охват (деньги, заработок и подобные), заменяя буквы на похожие символы</dd>
+      <dt>Чтобы что</dt><dd>Текст звучит как человек, и пост не теряет охват</dd>
+      <dt>Когда</dt><dd>Писатели включают их сами. Вручную для чужих текстов</dd>
+      <dt>Скажи</dt><dd><span class="say">«прогони через humaniser»</span>, <span class="say">«замаскируй стоп-слова»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== ВОРОНКИ ====================== -->
+<section id="voronki">
+  <h2>Воронки и статьи</h2>
+  <div class="cards">
+    <article class="sk"><h3>Telegram-воронка <span class="cmd">tg-voronka</span></h3><dl>
+      <dt>Что делает</dt><dd>Под твою нишу пишет всю воронку за кодовое слово одним файлом: подарок-гайд, выдачу, цепочку дожима на твой продукт. Собирает файл для импорта в бота</dd>
+      <dt>Чтобы что</dt><dd>Подписчик пишет слово и сам доходит до покупки, без твоего участия</dd>
+      <dt>Когда</dt><dd>Под каждый лид-магнит или продукт. Всегда первой, до воронки в директ</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай TG-воронку под слово …»</span></dd>
+      <dt>Нужно</dt><dd>Конструктор ботов или движок воронок</dd></dl></article>
+    <article class="sk"><h3>Воронка в директ <span class="cmd">chatplace-voronka</span></h3><dl>
+      <dt>Что делает</dt><dd>Лист сборки воронки в директе Instagram через ChatPlace: человек пишет слово, получает ссылку в Telegram-воронку, потом дожим</dd>
+      <dt>Чтобы что</dt><dd>Переводить людей из Instagram в Telegram, где ты ими управляешь</dd>
+      <dt>Когда</dt><dd>После TG-воронки, если продвигаешься в Instagram</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай ChatPlace-воронку под слово …»</span></dd>
+      <dt>Нужно</dt><dd>Аккаунт ChatPlace, готовая TG-воронка</dd></dl></article>
+    <article class="sk"><h3>Email-воронка <span class="cmd">email-voronka</span></h3><dl>
+      <dt>Что делает</dt><dd>Полную email-воронку для англоязычного рынка: подписка, приветственная серия, прогрев, продажи, сегменты</dd>
+      <dt>Чтобы что</dt><dd>Продавать англоязычной аудитории через почту</dd>
+      <dt>Когда</dt><dd>При выходе на англоязычный рынок</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай email-воронку»</span></dd>
+      <dt>Нужно</dt><dd>Сервис рассылок Kit или Beehiiv</dd></dl></article>
+    <article class="sk"><h3>Статья на Дзен <span class="cmd">dzen-engine</span></h3><dl>
+      <dt>Что делает</dt><dd>Статья по правилам Дзена: заголовок нужной длины, крючок с героем, проверка лимитов. Можно взять статью со своего сайта</dd>
+      <dt>Чтобы что</dt><dd>Бесплатный охват из ленты Дзена</dd>
+      <dt>Когда</dt><dd>Раз в неделю или к каждой новой статье сайта</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай статью на Дзен про …»</span></dd>
+      <dt>Нужно</dt><dd>Канал на Дзене</dd></dl></article>
+    <article class="sk"><h3>Статья на площадки <span class="cmd">statya-na-ploshadku</span></h3><dl>
+      <dt>Что делает</dt><dd>Переписывает твою статью под VC, TenChat или Хабр: новый заголовок под другой запрос, переписано 30-50% текста, чек-лист публикации</dd>
+      <dt>Чтобы что</dt><dd>Одна статья приносит трафик с нескольких площадок</dd>
+      <dt>Когда</dt><dd>После каждой сильной статьи</dd>
+      <dt>Скажи</dt><dd><span class="say">«адаптируй статью под VC»</span></dd>
+      <dt>Нужно</dt><dd>Готовая статья</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== ВИЗУАЛ ====================== -->
+<section id="vizual">
+  <h2>Карусели, картинки, сторис</h2>
+  <div class="cards">
+    <article class="sk"><h3>Карусель <span class="cmd">carousel</span></h3><dl>
+      <dt>Что делает</dt><dd>Карусель на 8-12 слайдов от текста до готовых картинок, плюс подпись. Для Instagram и LinkedIn</dd>
+      <dt>Чтобы что</dt><dd>Карусели сохраняют и пересылают, они дают охват и подписки</dd>
+      <dt>Когда</dt><dd>2-3 раза в неделю или по плану</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай карусель про …»</span></dd>
+      <dt>Нужно</dt><dd>Тема</dd></dl></article>
+    <article class="sk"><h3>Уникализатор каруселей <span class="cmd">carousel-uniqualizer</span></h3><dl>
+      <dt>Что делает</dt><dd>Берёт виральную карусель конкурента, переводит и переписывает текст, перерисовывает слайды в твоём стиле и добавляет твой финальный призыв. Подготовку пакета делает <span class="cmd">viral-content-prep</span></dd>
+      <dt>Чтобы что</dt><dd>Повторить карусель, которая уже доказала охват, под своим брендом</dd>
+      <dt>Когда</dt><dd>Пачками по найденным донорам</dd>
+      <dt>Скажи</dt><dd><span class="say">«прогони эту карусель целиком»</span> + ссылка</dd>
+      <dt>Нужно</dt><dd>Доступ к генерации картинок</dd></dl></article>
+    <article class="sk"><h3>Картинка-пост и картинка к посту <span class="cmd">single-image</span> · <span class="cmd">post-image</span></h3><dl>
+      <dt>Что делает</dt><dd>Первый: одиночная картинка-пост с подписью (схема, скрин результата, цитата). Второй: живая фотореалистичная картинка к тексту без пластикового «нейро-вида»</dd>
+      <dt>Чтобы что</dt><dd>Визуал к постам без дизайнера и фотостоков</dd>
+      <dt>Когда</dt><dd>К постам по необходимости</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай картинку к посту»</span></dd>
+      <dt>Нужно</dt><dd>Генерация картинок, перед тратой просит подтверждение</dd></dl></article>
+    <article class="sk"><h3>Сторис <span class="cmd">сторизмейкер</span></h3><dl>
+      <dt>Что делает</dt><dd>Продающие сторис и закреплённые подборки Instagram под холодную аудиторию: структура, тексты твоим голосом, готовые картинки и видео</dd>
+      <dt>Чтобы что</dt><dd>Новый человек заходит в профиль и сразу понимает, что ты предлагаешь</dd>
+      <dt>Когда</dt><dd>При упаковке профиля и под каждый запуск</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай продающие сторис»</span></dd>
+      <dt>Нужно</dt><dd>Твои фото</dd></dl></article>
+    <article class="sk"><h3>Брендбук <span class="cmd">brandkit</span></h3><dl>
+      <dt>Что делает</dt><dd>Визуальный стиль бренда: логотип, цвета, доски-презентации стиля</dd>
+      <dt>Чтобы что</dt><dd>Единый узнаваемый вид во всех соцсетях</dd>
+      <dt>Когда</dt><dd>Один раз и при ребрендинге</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай брендбук»</span></dd>
+      <dt>Нужно</dt><dd>Генерация картинок</dd></dl></article>
+    <article class="sk"><h3>Higgsfield: реклама, товар, маркетплейс, лицо <span class="cmd">higgsfield-generate</span> · <span class="cmd">higgsfield-product-photoshoot</span> · <span class="cmd">higgsfield-marketplace-cards</span> · <span class="cmd">higgsfield-soul-id</span></h3><dl>
+      <dt>Что делает</dt><dd>Картинки и видео через Higgsfield: рекламные ролики и UGC, студийное товарное фото, карточки для маркетплейса, обучение модели на твоём лице, чтобы генерировать тебя в любых сценах</dd>
+      <dt>Чтобы что</dt><dd>Профессиональный визуал без фотографа и студии</dd>
+      <dt>Когда</dt><dd>По задаче</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай товарное фото»</span>, <span class="say">«обучи мою модель лица»</span></dd>
+      <dt>Нужно</dt><dd>Аккаунт Higgsfield с кредитами</dd></dl></article>
+    <article class="sk"><h3>Анимация картинки <span class="cmd">motion-design-prompter</span></h3><dl>
+      <dt>Что делает</dt><dd>По статичной картинке или постеру пишет готовый промпт, чтобы оживить её в Higgsfield</dd>
+      <dt>Чтобы что</dt><dd>Из обложки или афиши сделать движущийся ролик</dd>
+      <dt>Когда</dt><dd>По задаче</dd>
+      <dt>Скажи</dt><dd><span class="say">«оживи эту картинку»</span> + файл</dd>
+      <dt>Нужно</dt><dd>Higgsfield</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== МУЛЬТИКИ ====================== -->
+<section id="multiki">
+  <h2>Мультики <span class="tag t-new">новое в 1.7</span></h2>
+  <p class="intro">Короткие ролики с героями без съёмки и без твоего лица. Героя, его вид, мир, цвета и голос выбираешь сама, на любой вопрос можно ответить «выбери за меня» или прислать картинку. Автор системы проверял мультики на Mac, на Windows они пока не проверены</p>
+  <div class="cards">
+    <article class="sk"><h3>Проводник по мультикам <span class="cmd">multiki</span></h3><dl>
+      <dt>Что делает</dt><dd>Показывает все шесть форматов простыми словами, до выбора называет время и сколько уйдёт картинок, проверяет компьютер и ведёт в нужный формат</dd>
+      <dt>Чтобы что</dt><dd>Не разбираться в форматах самой</dd>
+      <dt>Когда</dt><dd>Всегда начинай с него, если не знаешь, какой формат нужен</dd>
+      <dt>Скажи</dt><dd><span class="say">«хочу мультик»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+    <article class="sk"><h3>Фабрика своего формата <span class="cmd">multik-fabrika</span></h3><dl>
+      <dt>Что делает</dt><dd>По примеру чужого мультика (файл, ссылка, скрины или описание) создаёт тебе собственный скилл с той же механикой и твоими героями</dd>
+      <dt>Чтобы что</dt><dd>Делать понравившийся формат серией, каждый раз одной командой</dd>
+      <dt>Когда</dt><dd>Когда увидела мультик, который хочешь повторять</dd>
+      <dt>Скажи</dt><dd><span class="say">«вот пример мультика, хочу такой же формат»</span></dd>
+      <dt>Нужно</dt><dd>Пример</dd></dl></article>
+    <article class="sk"><h3>Шесть форматов</h3>
+      <ul class="mini">
+        <li><span class="cmd">faceless-multik</span> - диалог двух героев: один спрашивает, другой объясняет. Скажи <span class="say">«мультик-диалог»</span></li>
+        <li><span class="cmd">blender-multik</span> - объёмный 3D-мультик про героя и помощника. Скажи <span class="say">«3D-мультик»</span></li>
+        <li><span class="cmd">kontorka</span> - обычный день как заставка старой компьютерной игры, спокойный рассказчик. Скажи <span class="say">«катсцена старой игры»</span></li>
+        <li><span class="cmd">sitkom-2d</span> - рисованный ситком: герой хочет быстрых денег, помощник показывает настоящий путь. Скажи <span class="say">«рисованный ситком»</span></li>
+        <li><span class="cmd">pritcha-gravyura</span> - притча под спокойный голос на листах старинной гравюры. Скажи <span class="say">«притча-гравюра»</span></li>
+        <li><span class="cmd">maskot-novosti</span> - новость, которую рассказывает твой персонаж в углу кадра, с цифрами и скринами. Скажи <span class="say">«новость с маскотом»</span></li>
+      </ul>
+      <p>Когда: регулярная рубрика 1-3 раза в неделю или серия под тему</p>
+    </article>
+  </div>
+</section>
+
+<!-- ====================== AI-ВИДЕО ====================== -->
+<section id="ai-video">
+  <h2>ИИ-видео без съёмки</h2>
+  <div class="cards">
+    <article class="sk"><h3>AI-криэйтор <span class="cmd">/ai-kreator</span> <span class="tag t-new">новое</span></h3><dl>
+      <dt>Что делает</dt><dd>14 форматов через Higgsfield одной командой: карта персонажа, раскадровка, обложка с надписью, серия в одном стиле, правка картинки, оживление фото, морфинг, клип из нескольких сцен, говорящий персонаж, мини-мультфильм, клип под трек, звук, повтор трендового ролика по ссылке, любая идея вне каталога</dd>
+      <dt>Чтобы что</dt><dd>Трендовые ИИ-ролики и визуал, не разбираясь в нейросетях и промптах</dd>
+      <dt>Когда</dt><dd>По задаче. Сам не включается, только командой</dd>
+      <dt>Скажи</dt><dd><span class="say">/ai-kreator oblozhka обложка с надписью «…»</span>. Без списаний, чтобы посмотреть смету: добавь в конец <span class="say">--suho</span></dd>
+      <dt>Нужно</dt><dd>Аккаунт Higgsfield с кредитами. До первой генерации показывает смету, выше лимита спрашивает твоё «да»</dd></dl></article>
+    <article class="sk"><h3>ИИ-монтаж без лица <span class="cmd">ai-montazh</span> <span class="tag t-new">новое</span></h3><dl>
+      <dt>Что делает</dt><dd>Ролик на белом фоне с настоящими логотипами и записями работы сервисов, фото-крючком, твоим голосом (запись или клон) и тихой музыкой. Может повторить структуру чужого ролика</dd>
+      <dt>Чтобы что</dt><dd>Экспертные ролики без съёмки себя</dd>
+      <dt>Когда</dt><dd>Рубрикой, несколько раз в неделю</dd>
+      <dt>Скажи</dt><dd><span class="say">/ai-montazh тема ролика</span>, <span class="say">«повтори этот ролик без лица»</span></dd>
+      <dt>Нужно</dt><dd>Твой голос записью или клоном</dd></dl></article>
+    <article class="sk"><h3>Размножение рекламы <span class="cmd">genjutsu-ads</span> <span class="tag t-new">новое</span></h3><dl>
+      <dt>Что делает</dt><dd>Делает один рекламный ролик с героем и затем подменяет внутри него персонажа, продукт, место и язык, сохраняя движение камеры и склейки</dd>
+      <dt>Чтобы что</dt><dd>Десятки версий рекламы под разные аудитории из одного ролика</dd>
+      <dt>Когда</dt><dd>При запуске рекламы и тестах</dd>
+      <dt>Скажи</dt><dd><span class="say">«размножь ролик под разные аудитории»</span></dd>
+      <dt>Нужно</dt><dd>Higgsfield</dd></dl></article>
+    <article class="sk"><h3>Стиль монтажа в Omni <span class="cmd">montazh-v-omni</span> <span class="tag t-new">новое</span> · <span class="cmd">omni-flash</span></h3><dl>
+      <dt>Что делает</dt><dd>Забирает стиль монтажа из понравившегося видео и пишет промпты для Google Omni Flash под твой ролик. <span class="cmd">omni-flash</span> сам прогоняет говорящий кусок через Google Flow: добавляет графику и анимированные субтитры</dd>
+      <dt>Чтобы что</dt><dd>Твой ролик в стиле дорогого монтажа</dd>
+      <dt>Когда</dt><dd>По задаче</dd>
+      <dt>Скажи</dt><dd><span class="say">«забери стиль монтажа»</span> + ссылка</dd>
+      <dt>Нужно</dt><dd>Доступ к Google Flow</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== ВИДЕО С ТОБОЙ ====================== -->
+<section id="video">
+  <h2>Видео с тобой или двойником</h2>
+  <p class="intro">Цифровой двойник - твой аватар в HeyGen, который говорит твоим голосом. Ролик можно снять самой или сгенерировать двойником, монтаж одинаковый</p>
+  <div class="cards">
+    <article class="sk"><h3>Сценарий ролика <span class="cmd">video</span></h3><dl>
+      <dt>Что делает</dt><dd>Текст ролика от 15 секунд до часа, заголовок и задание на монтаж. Может взять твою надиктовку или повторить структуру донора</dd>
+      <dt>Чтобы что</dt><dd>Снимать по готовому тексту и укладываться в нужную длину</dd>
+      <dt>Когда</dt><dd>Перед каждой съёмкой</dd>
+      <dt>Скажи</dt><dd><span class="say">«напиши сценарий рилса про …»</span></dd>
+      <dt>Нужно</dt><dd>Тема</dd></dl></article>
+    <article class="sk"><h3>Монтаж разговорного ролика <span class="cmd">talking-head-replica</span></h3><dl>
+      <dt>Что делает</dt><dd>Монтирует ролик, где ты говоришь в камеру, по схеме виральных роликов: убирает неудачные дубли, крупные субтитры по 1-2 слова, вставки экрана, плашку с кодовым словом. Подходит и для записи двойника</dd>
+      <dt>Чтобы что</dt><dd>Готовый рилс из сырой записи без монтажёра</dd>
+      <dt>Когда</dt><dd>После каждой съёмки</dd>
+      <dt>Скажи</dt><dd><span class="say">«смонтируй разговорный ролик»</span></dd>
+      <dt>Нужно</dt><dd>Твоя запись</dd></dl></article>
+    <article class="sk"><h3>Повтор виралки с двойником <span class="cmd">replicate-viral</span></h3><dl>
+      <dt>Что делает</dt><dd>По ссылке на чужой виральный ролик пишет твой текст и делает ролик, где говорит твой цифровой двойник</dd>
+      <dt>Чтобы что</dt><dd>Ролики по проверенным донорам без съёмки</dd>
+      <dt>Когда</dt><dd>Под каждого найденного донора</dd>
+      <dt>Скажи</dt><dd><span class="say">/replicate-viral ссылка</span></dd>
+      <dt>Нужно</dt><dd>Аккаунт HeyGen с твоим аватаром и клоном голоса</dd></dl></article>
+    <article class="sk"><h3>Образ для двойника <span class="cmd">dvoynik-look</span> <span class="tag t-new">новое</span></h3><dl>
+      <dt>Что делает</dt><dd>Подбирает тебе новый образ и фон из 32 вариантов под тему ролика и выдаёт готовые промпты для съёмки двойника в этом образе</dd>
+      <dt>Чтобы что</dt><dd>Ролики двойника не выглядят одинаково</dd>
+      <dt>Когда</dt><dd>Под каждую серию роликов</dd>
+      <dt>Скажи</dt><dd><span class="say">«какой образ под ролик про …»</span></dd>
+      <dt>Нужно</dt><dd>HeyGen</dd></dl></article>
+    <article class="sk"><h3>Аватар, голос, новости аватаром <span class="cmd">avatar-generate</span> · <span class="cmd">voice-generate</span> · <span class="cmd">ai-avatar-news</span></h3><dl>
+      <dt>Что делает</dt><dd>Говорящий аватар по тексту, озвучка текста твоим клонированным голосом, ежедневные новости ниши, которые читает аватар</dd>
+      <dt>Чтобы что</dt><dd>Ежедневные ролики без записи</dd>
+      <dt>Когда</dt><dd>Ежедневно или по рубрике</dd>
+      <dt>Скажи</dt><dd><span class="say">/avatar текст</span>, <span class="say">/voice текст</span></dd>
+      <dt>Нужно</dt><dd>HeyGen и ElevenLabs с твоими аватаром и голосом</dd></dl></article>
+    <article class="sk"><h3>Монтаж разговором <span class="cmd">video-use</span> · <span class="cmd">склей-отрывки</span></h3><dl>
+      <dt>Что делает</dt><dd>Первый: монтаж любого видео словами (вырезать, цвет, субтитры, графика). Второй: склеивает несколько отрывков в один ролик, обрезая тишину по краям</dd>
+      <dt>Чтобы что</dt><dd>Монтировать, просто описывая, что нужно</dd>
+      <dt>Когда</dt><dd>По задаче</dd>
+      <dt>Скажи</dt><dd><span class="say">«склей отрывки из папки в один ролик»</span></dd>
+      <dt>Нужно</dt><dd>Видеофайлы</dd></dl></article>
+    <article class="sk"><h3>Субтитры и плашки <span class="cmd">embedded-captions</span> · <span class="cmd">subtitle-remover</span> · <span class="cmd">graphic-overlays</span></h3><dl>
+      <dt>Что делает</dt><dd>Накладывает субтитры в одном из 35 стилей, в том числе «за спиной» спикера. Чисто стирает вшитые чужие субтитры. Добавляет поверх видео заголовки, подписи, цифры, цитаты</dd>
+      <dt>Чтобы что</dt><dd>Ролик смотрят без звука и досматривают</dd>
+      <dt>Когда</dt><dd>На каждом ролике по необходимости</dd>
+      <dt>Скажи</dt><dd><span class="say">«наложи субтитры»</span>, <span class="say">«убери субтитры из этого видео»</span></dd>
+      <dt>Нужно</dt><dd>Видеофайл</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== ЧУЖИЕ РОЛИКИ ====================== -->
+<section id="chuzhie">
+  <h2>Разбор и повтор чужих роликов</h2>
+  <div class="cards">
+    <article class="sk"><h3>Забрать и разобрать ролик <span class="cmd">ingest-reel</span> · <span class="cmd">reel-to-script</span> · <span class="cmd">ui-inventory</span></h3><dl>
+      <dt>Что делает</dt><dd>Скачивает ролик по ссылке, расшифровывает речь, достаёт кадры и делает подробный покадровый разбор: планы, свет, звук, как собран</dd>
+      <dt>Чтобы что</dt><dd>Понять, почему ролик залетел, и собрать свой по той же схеме</dd>
+      <dt>Когда</dt><dd>Под каждого сильного донора</dd>
+      <dt>Скажи</dt><dd><span class="say">«разбери этот рилс»</span> + ссылка</dd>
+      <dt>Нужно</dt><dd>Ссылка</dd></dl></article>
+    <article class="sk"><h3>Быстрые повторы <span class="cmd">reel-sub-overlay</span> · <span class="cmd">broll-swap</span></h3><dl>
+      <dt>Что делает</dt><dd>Первый берёт чужой ролик целиком, стирает его субтитры и ставит твои русские с твоим кодовым словом. Второй в ролике «смысл сверху, фоновое видео снизу» меняет нижнюю половину на свежее бесплатное видео</dd>
+      <dt>Чтобы что</dt><dd>Быстрый ролик по проверенной виралке</dd>
+      <dt>Когда</dt><dd>По найденным донорам</dd>
+      <dt>Скажи</dt><dd><span class="say">«повтори виралку субтитрами»</span> + ссылка</dd>
+      <dt>Нужно</dt><dd>Ссылка</dd></dl></article>
+    <article class="sk"><h3>Длинные видео <span class="cmd">youtube-viral-remake</span> · <span class="cmd">cut-from-long-form</span></h3><dl>
+      <dt>Что делает</dt><dd>Первый находит виральное длинное YouTube-видео, разбирает, на чём держится внимание, и строит твой ролик по той же структуре. Второй нарезает из длинного видео 5-7 вертикальных роликов</dd>
+      <dt>Чтобы что</dt><dd>Длинный YouTube по проверенной схеме и много коротких роликов из одного эфира</dd>
+      <dt>Когда</dt><dd>После каждого длинного эфира или записи</dd>
+      <dt>Скажи</dt><dd><span class="say">«нарежь рилсы из этого видео»</span></dd>
+      <dt>Нужно</dt><dd>Ссылка на видео, для нарезки сервис Reap</dd></dl></article>
+    <article class="sk"><h3>Готовые форматы роликов <span class="cmd">before-after</span> · <span class="cmd">screen-record-face-cam</span> · <span class="cmd">split-screen-trend-jack</span></h3><dl>
+      <dt>Что делает</dt><dd>Схемы трёх форматов: «было и стало», запись экрана с тобой в углу, тренд сверху и твоя реакция снизу</dd>
+      <dt>Чтобы что</dt><dd>Брать форматы, которые хорошо останавливают ленту</dd>
+      <dt>Когда</dt><dd>По плану роликов</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай ролик до-после про …»</span></dd>
+      <dt>Нужно</dt><dd>Материал для ролика</dd></dl></article>
+    <article class="sk"><h3>YouTube и запись экрана <span class="cmd">youtube</span> <span class="tag t-new">новое</span> · <span class="cmd">ui-record</span></h3><dl>
+      <dt>Что делает</dt><dd>Полный цикл YouTube-ролика: план и сценарий, запись экрана с голосом, монтаж (склейки, приближения к кликам, карточки, музыка), заголовки и идея превью. <span class="cmd">ui-record</span> записывает работу сайта или программы для вставок в ролики</dd>
+      <dt>Чтобы что</dt><dd>Обучающие и обзорные видео без платного софта записи</dd>
+      <dt>Когда</dt><dd>Для каждого длинного ролика</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай ролик для ютуба про …»</span>, <span class="say">«запиши экран»</span></dd>
+      <dt>Нужно</dt><dd>Микрофон</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== МОУШН ====================== -->
+<section id="motion">
+  <h2>Моушн-графика и объясняющие видео</h2>
+  <p class="intro">Здесь видео собирается из графики, текста и анимации, без съёмки. Главный вход один: <span class="cmd">hyperframes</span>. Он сам выберет нужный инструмент ниже</p>
+  <div class="cards">
+    <article class="sk"><h3>Видео из графики <span class="cmd">hyperframes</span></h3><dl>
+      <dt>Что делает</dt><dd>Единый вход для любого графического видео: промо, объяснение, титры, слайд-шоу, оверлей. Сам подключает нужные подскиллы (анимация, звук, субтитры, библиотека готовых эффектов)</dd>
+      <dt>Чтобы что</dt><dd>Не выбирать инструмент самой</dd>
+      <dt>Когда</dt><dd>Всегда, когда нужен анимированный ролик без съёмки</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай анимированное видео про …»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+    <article class="sk"><h3>Готовые сценарии видео</h3>
+      <ul class="mini">
+        <li><span class="cmd">faceless-explainer</span> - объясняющее видео из текста, статьи или темы: шрифты, схемы, графика</li>
+        <li><span class="cmd">product-launch-video</span> - промо продукта или сервиса по ссылке или описанию</li>
+        <li><span class="cmd">website-to-video</span> · <span class="cmd">website-to-hyperframes</span> - видео-тур по сайту из его же картинок</li>
+        <li><span class="cmd">motion-graphics</span> - короткая графика до 30 секунд: цифры, график, титр, карта, анимированный твит</li>
+        <li><span class="cmd">motion-element</span> - один анимированный элемент поверх рилса: счётчик, всплывающие комментарии, прозрачный фон</li>
+        <li><span class="cmd">general-video</span> - длинные и многосценные сборки</li>
+        <li><span class="cmd">motion-storyboard</span> - раскадровка анимации по сегментам ролика</li>
+        <li><span class="cmd">media-use</span> - музыка, звуки, иконки, логотипы, озвучка для такого видео</li>
+      </ul>
+      <p>Скажи: <span class="say">«сделай объясняющее видео по этой статье»</span>, <span class="say">«сделай анимированный счётчик для рилса»</span></p>
+    </article>
+  </div>
+</section>
+
+<!-- ====================== САЙТЫ ====================== -->
+<section id="sayty">
+  <h2>Сайты</h2>
+  <div class="cards">
+    <article class="sk"><h3>Сайт и лендинг <span class="cmd">website</span></h3><dl>
+      <dt>Что делает</dt><dd>Сайт от смысла к форме: бриф, интервью, структура, путь клиента, тексты, и только после твоего согласования дизайн, код и запуск. Сам подключает дизайн-скиллы</dd>
+      <dt>Чтобы что</dt><dd>Сайт, который ведёт посетителя к заявке</dd>
+      <dt>Когда</dt><dd>Под каждый продукт или запуск</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай лендинг под …»</span> или <span class="say">/website</span></dd>
+      <dt>Нужно</dt><dd>Продукт и оффер</dd></dl></article>
+    <article class="sk"><h3>Дизайн и улучшение</h3>
+      <ul class="mini">
+        <li><span class="cmd">redesign-existing-projects</span> - улучшить готовый сайт до премиального вида, ничего не сломав</li>
+        <li><span class="cmd">impeccable</span> <span class="tag t-new">новое</span> - разбор и доводка любого интерфейса: иерархия, читаемость, цвет, формы, пустые состояния</li>
+        <li><span class="cmd">extract-design-system</span> <span class="tag t-new">новое</span> - забрать цвета и шрифты с понравившегося сайта</li>
+        <li><span class="cmd">prototype</span> <span class="tag t-new">новое</span> - несколько разных вариантов блока, переключаешь и выбираешь лучший</li>
+        <li><span class="cmd">mobile-native</span> <span class="tag t-new">новое</span> - чтобы сайт на телефоне ощущался как приложение</li>
+        <li><span class="cmd">apple-design</span> <span class="tag t-new">новое</span> - плавность и движения в стиле Apple</li>
+        <li>стили оформления: <span class="cmd">frontend-design</span>, <span class="cmd">design-taste-frontend</span>, <span class="cmd">high-end-visual-design</span>, <span class="cmd">minimalist-ui</span>, <span class="cmd">industrial-brutalist-ui</span>, <span class="cmd">gpt-taste</span>, <span class="cmd">ui-ux-pro-max</span>, <span class="cmd">emil-design-eng</span></li>
+        <li>дизайн по картинке: <span class="cmd">imagegen-frontend-web</span>, <span class="cmd">imagegen-frontend-mobile</span>, <span class="cmd">image-to-code</span>, <span class="cmd">stitch-design-taste</span>, <span class="cmd">stitch-loop</span></li>
+        <li>анимации на сайте <span class="tag t-new">новое</span>: <span class="cmd">animate</span> (сделать), <span class="cmd">find-animation-opportunities</span> (где добавить), <span class="cmd">review-animations</span> и <span class="cmd">improve-animations</span> (проверить и улучшить), <span class="cmd">animation-vocabulary</span> (как называется эффект)</li>
+      </ul>
+      <p>Обычно их отдельно звать не нужно: <span class="cmd">website</span> подключает их сам. Отдельно: <span class="say">«улучши дизайн моего сайта»</span></p>
+    </article>
+  </div>
+</section>
+
+<!-- ====================== ПРОВЕРКА ====================== -->
+<section id="proverka">
+  <h2>Проверка сайтов и лендингов <span class="tag t-new">новое</span></h2>
+  <div class="cards">
+    <article class="sk"><h3>Почему лендинг не продаёт <span class="cmd">lp-landing-page-triage</span> · <span class="cmd">landing-page-conversion-audit</span></h3><dl>
+      <dt>Что делает</dt><dd>Первый определяет, где проблема, и говорит, какую проверку делать дальше. Второй делает полный аудит и выдаёт список исправлений по тому, сколько денег они вернут</dd>
+      <dt>Чтобы что</dt><dd>Трафик есть, заявок нет: найти причину</dd>
+      <dt>Когда</dt><dd>После запуска страницы и когда падают заявки</dd>
+      <dt>Скажи</dt><dd><span class="say">«почему этот лендинг не конвертит»</span> + ссылка</dd>
+      <dt>Нужно</dt><dd>Ссылка, желательно цифры трафика и заявок</dd></dl></article>
+    <article class="sk"><h3>26 узких проверок <span class="cmd">lp-*</span></h3>
+      <ul class="mini">
+        <li>первый экран и шапка: <span class="cmd">lp-above-the-fold-clarity-review</span>, <span class="cmd">lp-hero-section-diagnosis</span></li>
+        <li>оффер и текст: <span class="cmd">lp-offer-clarity-diagnosis</span>, <span class="cmd">lp-landing-page-copy-readability-pass</span>, <span class="cmd">lp-page-length-fit-check</span></li>
+        <li>кнопки и формы: <span class="cmd">lp-cta-clarity-check</span>, <span class="cmd">lp-form-friction-finder</span>, <span class="cmd">lp-lead-form-sales-handoff-check</span></li>
+        <li>доверие: <span class="cmd">lp-trust-signal-audit</span>, <span class="cmd">lp-social-proof-strength-audit</span>, <span class="cmd">lp-objection-map-builder</span></li>
+        <li>цены и сравнения: <span class="cmd">lp-pricing-page-clarity-review</span>, <span class="cmd">lp-comparison-page-positioning-review</span>, <span class="cmd">lp-trial-vs-demo-path-decision</span></li>
+        <li>реклама и трафик: <span class="cmd">lp-paid-traffic-message-match-audit</span>, <span class="cmd">lp-traffic-temperature-match-review</span>, <span class="cmd">lp-google-ads-landing-page-experience-review</span>, <span class="cmd">lp-landing-page-scale-readiness-check</span></li>
+        <li>телефон, скорость, доступность: <span class="cmd">lp-mobile-conversion-review</span>, <span class="cmd">lp-page-speed-impact-review</span>, <span class="cmd">lp-accessibility-conversion-blocker-check</span></li>
+        <li>утечки и всплывашки: <span class="cmd">lp-conversion-leak-finder</span>, <span class="cmd">lp-popup-and-overlay-timing-review</span></li>
+        <li>после заявки и тесты: <span class="cmd">lp-thank-you-page-opportunity-audit</span>, <span class="cmd">lp-landing-page-ab-test-readout</span></li>
+      </ul>
+      <p>Звать по названию не нужно: опиши проблему словами, например <span class="say">«на телефоне почти нет заявок»</span>, и Claude выберет проверку</p>
+    </article>
+    <article class="sk"><h3>Качество сайта <span class="cmd">wq-web-quality-audit</span></h3><dl>
+      <dt>Что делает</dt><dd>Общий аудит: скорость, SEO, доступность, безопасность. Отдельные проверки: <span class="cmd">wq-performance</span>, <span class="cmd">wq-core-web-vitals</span>, <span class="cmd">wq-seo</span>, <span class="cmd">wq-accessibility</span>, <span class="cmd">wq-best-practices</span>, <span class="cmd">web-design-guidelines</span></dd>
+      <dt>Чтобы что</dt><dd>Сайт быстро открывается и хорошо стоит в поиске</dd>
+      <dt>Когда</dt><dd>После запуска сайта и раз в квартал</dd>
+      <dt>Скажи</dt><dd><span class="say">«проверь качество моего сайта»</span></dd>
+      <dt>Нужно</dt><dd>Ссылка</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== УРОКИ И СИСТЕМА ====================== -->
+<section id="uroki">
+  <h2>Уроки, документы, система</h2>
+  <div class="cards">
+    <article class="sk"><h3>Презентация урока <span class="cmd">prezentaciya-uroka</span></h3><dl>
+      <dt>Что делает</dt><dd>Обучающая презентация урока для твоего курса, по которой ученик сам всё понимает. Можно озвучить или записать на камеру, выгрузить в PDF</dd>
+      <dt>Чтобы что</dt><dd>Собрать курс без лица и без дизайнера</dd>
+      <dt>Когда</dt><dd>Под каждый урок курса</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай презентацию урока про …»</span></dd>
+      <dt>Нужно</dt><dd>Тема урока</dd></dl></article>
+    <article class="sk"><h3>Прогревочные уроки <span class="cmd">lesson-deck</span></h3><dl>
+      <dt>Что делает</dt><dd>Презентации бесплатных уроков, которые подводят к воркшопу или марафону</dd>
+      <dt>Чтобы что</dt><dd>Прогреть аудиторию к продаже через пользу</dd>
+      <dt>Когда</dt><dd>Перед запуском</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай прогревочный урок к воркшопу»</span></dd>
+      <dt>Нужно</dt><dd>Тема воркшопа</dd></dl></article>
+    <article class="sk"><h3>Документы <span class="cmd">pdf</span> · <span class="cmd">pptx</span> · <span class="cmd">xlsx</span></h3><dl>
+      <dt>Что делает</dt><dd>Читать, создавать и править PDF, презентации PowerPoint и таблицы Excel</dd>
+      <dt>Чтобы что</dt><dd>Гайды, отчёты, таблицы клиентам</dd>
+      <dt>Когда</dt><dd>По задаче</dd>
+      <dt>Скажи</dt><dd><span class="say">«собери это в PDF»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+    <article class="sk"><h3>Конвейер с проверкой <span class="cmd">konveyer</span></h3><dl>
+      <dt>Что делает</dt><dd>Четыре агента делят работу: один пишет задание, второй делает, третий проверяет свежим взглядом, четвёртый сверяет с твоей исходной просьбой</dd>
+      <dt>Чтобы что</dt><dd>Важная работа приходит проверенной, без пропущенных хвостов</dd>
+      <dt>Когда</dt><dd>Для крупных и важных задач</dd>
+      <dt>Скажи</dt><dd><span class="say">«прогони через конвейер: …»</span></dd>
+      <dt>Нужно</dt><dd>Время, это дольше обычной работы</dd></dl></article>
+    <article class="sk"><h3>Свои скиллы и код <span class="cmd">skill-craft</span> · <span class="cmd">вайбкодинг</span></h3><dl>
+      <dt>Что делает</dt><dd>Первый создаёт и чинит скиллы. Второй ведёт любую разработку (бот, калькулятор, сервис) по 12 шагам от исследования до запуска</dd>
+      <dt>Чтобы что</dt><dd>Достраивать систему под себя и делать свои цифровые продукты</dd>
+      <dt>Когда</dt><dd>По задаче</dd>
+      <dt>Скажи</dt><dd><span class="say">«сделай мне скилл, который …»</span>, <span class="say">«сделай калькулятор …»</span></dd>
+      <dt>Нужно</dt><dd>Ничего</dd></dl></article>
+  </div>
+</section>
+
+<!-- ====================== LITE ====================== -->
+<section id="lite">
+  <h2>Lite-версии для Claude.ai <span class="tag t-extra">доп. пакет</span></h2>
+  <p class="intro">Упрощённые копии для обычного Claude.ai в браузере, без установленной системы. Внутри операционной системы используй полные версии</p>
+  <div class="cards">
+    <article class="sk">
+      <ul class="mini">
+        <li><span class="cmd">generator-tem-lite</span> - темы и углы, которые аудитория ещё не слышала</li>
+        <li><span class="cmd">pisatel-tg-post-lite</span>, <span class="cmd">pisatel-karuseli-lite</span>, <span class="cmd">pisatel-rilz-razgovor-lite</span>, <span class="cmd">pisatel-rilz-overlay-lite</span>, <span class="cmd">pisatel-threads-lite</span> - по одному посту, карусели, разговорному рилсу, рилсу с текстом поверх видео, посту Threads</li>
+        <li><span class="cmd">skraper-lite</span> - достаёт расшифровки и подписи прямо в чат через Apify</li>
+        <li><span class="cmd">raspakovka-ekspertnosti-lite</span>, <span class="cmd">issledovanie-ca-lite</span>, <span class="cmd">setka-produktov-i-offera-lite</span>, <span class="cmd">stil-golosa-po-postam-lite</span>, <span class="cmd">svertka-istochnika-lite</span>, <span class="cmd">humaniser-lite</span> - те же задачи, что у полных версий</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<!-- ====================== DEV ====================== -->
+<section id="dev">
+  <h2>Для разработки и устаревшие</h2>
+  <p class="intro">Эти скиллы нужны Claude, когда он пишет код. Эксперту звать их самой не нужно</p>
+  <div class="cards">
+    <article class="sk">
+      <ul class="mini">
+        <li>анимация в коде: <span class="cmd">gsap</span> и 7 официальных <span class="cmd">gsap-*</span>, <span class="cmd">motion</span>, <span class="cmd">lottie</span>, <span class="cmd">three</span>, <span class="cmd">animejs</span>, <span class="cmd">css-animations</span>, <span class="cmd">waapi</span>, <span class="cmd">typegpu</span>, <span class="cmd">tailwind</span>, <span class="cmd">react-view-transitions</span>, <span class="cmd">animate-expo</span></li>
+        <li>подскиллы видео-движка: <span class="cmd">hyperframes-core</span>, <span class="cmd">-cli</span>, <span class="cmd">-animation</span>, <span class="cmd">-creative</span>, <span class="cmd">-media</span>, <span class="cmd">-registry</span>, <span class="cmd">-studio</span>, <span class="cmd">-audio</span>, <span class="cmd">-keyframes</span>, <span class="cmd">-read-first</span>, плюс <span class="cmd">remotion-to-hyperframes</span>, <span class="cmd">pr-to-video</span></li>
+        <li>программирование: <span class="cmd">phase-review</span> (проверка кода агентами), <span class="cmd">full-output-enforcement</span>, <span class="cmd">pick-ui-library</span>, <span class="cmd">ask-sonner</span>, <span class="cmd">write-swift</span></li>
+        <li><span class="tag t-off">устарел</span> <span class="cmd">stripe-screenshot-post</span> и <span class="cmd">visual-concept-square</span> заменены на <span class="cmd">single-image</span>. <span class="cmd">lead-magnit</span> отключён: лид-магнит теперь делается статьёй через <span class="cmd">seo-dvizhok</span></li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+</div>
+</body>
+</html>
